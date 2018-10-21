@@ -1,0 +1,189 @@
+<!-- Добавлено/исправлено
+  -Немного динамики для приложения: кнопки вперед-назад, перемещение по календарю.
+  -Исправлено некорректное отображение некоторых месяцев(первый день месяца мог начаться
+   на несоответствующий день недели при перемещении по календарю).
+  -Исправлено некорректное отображение таблицы месяца(если первый день начинался
+   на Sun, то могло не хватить ячеек на показ всех чисел) 
+  -Чуть оптимизировал приложение -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calendar</title>
+  <meta charset="utf-8">
+</head>
+
+<style type='text/css'>
+    body{
+
+            background: url(../pictures/background.png);
+            background-position: top;
+            color: #00FFFF;
+        }
+
+    input{
+        width:120px;
+    }
+
+    input#exit{
+        width:260px;
+    }
+</style>
+
+<body>
+  <div id="container"></div>
+
+  <script>
+    function createCalendar(year, monthArg, container)
+    {
+        const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        const monthes = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        /* First we need to get date for 'year' and 'month' */
+        let date = new Date(year, monthArg);
+        let month = date.getMonth();
+
+        year = date.getFullYear();
+        date.setMonth(month + 1);
+        date.setDate(0);
+
+        let lastDay = date.getDate();
+        date.setMonth(month);
+        date.setDate(1);
+
+        let currentDay = date.getDate();
+        let firstWeekDay = date.getDay()-1;
+
+        if(firstWeekDay < 0)
+          firstWeekDay = 6; 
+
+        /* Then we will build a table */
+        const table = document.createElement('table');
+        const tableHead = document.createElement('tr');
+        const tableHeadElem = document.createElement('td');
+        let row, cell;
+        let rowCnt, cellCnt;
+
+        table.setAttribute('cellpadding', '5');
+        table.setAttribute('cellspacing', '0');
+        tableHead.appendChild(tableHeadElem);
+        tableHeadElem.setAttribute('colspan', '7');
+        tableHeadElem.setAttribute('align', 'center');
+        tableHeadElem.textContent = monthes[month] + ' ' + year;
+
+        for(rowCnt = 0; rowCnt < 6; rowCnt++)
+        {
+            row = document.createElement('tr');
+            table.appendChild(row);
+
+            for(cellCnt = 0; cellCnt < 7; cellCnt++)
+            {
+              cell = document.createElement('td');
+              
+              row.appendChild(cell);
+            }
+        }
+
+        for(rowCnt = 0, cellCnt = 0; cellCnt < 7; cellCnt++)
+          table.children[rowCnt].children[cellCnt].innerText = weekDays[cellCnt]; // Fill weekdays' names
+
+        for(rowCnt = 1; rowCnt < 6; rowCnt++)
+        {
+            for(cellCnt = firstWeekDay; cellCnt < 7; cellCnt++, currentDay++)
+            {
+                if(currentDay === (lastDay + 1))
+                  break;
+                table.children[rowCnt].children[cellCnt].textContent = currentDay;
+            }
+          
+            firstWeekDay = 0;
+        }
+
+        /* If we need more cells to fill the calendar...*/
+        if(currentDay !== (lastDay + 1))
+        {
+            let cellsToAppend = lastDay - currentDay;
+            row = document.createElement('tr');
+            table.appendChild(row);
+
+            for(cellCnt = 0; cellCnt <= cellsToAppend; cellCnt++, currentDay++)
+            {
+                cell = document.createElement('td');
+                cell.textContent = currentDay;
+                row.appendChild(cell);
+            }
+        }
+
+        table.insertBefore(tableHead, table.children[0]); // append calendar title
+
+        /* Create buttons */
+        const buttonsArea = document.createElement('tr');
+
+        for(let i = 0; i < 2; i++)
+        {
+            const cell = document.createElement('td');
+            const button = document.createElement('input');
+
+            button.setAttribute('type', 'submit');
+
+            cell.appendChild(button);
+
+            buttonsArea.appendChild(cell);
+        }
+
+        buttonsArea.firstElementChild.lastElementChild.setAttribute('value', 'Prev');
+        buttonsArea.firstElementChild.setAttribute('colspan', '3');
+        buttonsArea.lastElementChild.lastElementChild.setAttribute('value', 'Next');
+        buttonsArea.lastElementChild.setAttribute('colspan', '3');
+        table.appendChild(buttonsArea);
+
+        // Set the handler for "Prev" button
+        buttonsArea.firstElementChild.onclick = function()   
+        {
+            const newContainer = document.createElement('div');
+            newContainer.setAttribute('id', 'container');
+            document.getElementById('container').remove();
+            document.body.appendChild(newContainer);
+            createCalendar(year, month-1, newContainer);
+        }
+
+        // Set the handler for "Next" button
+        buttonsArea.lastElementChild.onclick = function()
+        {
+            const newContainer = document.createElement('div');
+            newContainer.setAttribute('id', 'container');
+            document.getElementById('container').remove();
+            document.body.appendChild(newContainer);
+            createCalendar(year, month+1, newContainer);
+        }
+
+        /* Append our calendar to container */
+        container.appendChild(table);
+
+        /* Append these buttons to the container */
+        table.appendChild(buttonsArea);
+        //container.appendChild(buttonsArea);
+
+        /* Button to return to start page */
+        const exitButton = document.createElement('input');
+        exitButton.setAttribute('type', 'submit');
+        exitButton.setAttribute('value', 'Back to general page');
+        exitButton.setAttribute('id', 'exit');
+
+        exitButton.onclick = function(){ document.location.href = '../root/index.html' }
+
+        container.appendChild(exitButton);
+    }
+
+
+    /* Create our calendar */
+    const currentDate = new Date;
+    let year = currentDate.getFullYear();
+    let month = currentDate.getMonth();
+    
+    createCalendar(year, month, document.getElementById('container'));
+
+  </script>
+ </body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>General page</title>
+		<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
+	</head>
+
+	<style type='text/css'>
+
+		body{
+
+			background: url(../pictures/background.png);
+			background-repeat: no-repeat;
+			background-position: top;
+			color: #00FFFF;
+		}
+
+		#container{
+			position: absolute;
+			left: 560px;
+			top: 30px;
+		}
+
+		td{
+			text-align: center;
+		}
+
+		input{
+			width: 200px;
+		}
+
+	</style>
+
+	<body>
+		<div id='container'>
+			<table>
+				<tr>
+					<td>
+						<p>My Projects</p>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<input id='calendar' type='submit' value='JavaScript calendar'>
+					</td>
+				</tr>
+				<tr>
+					<td> 
+						<input id='table-sort' type='submit' value='Table sorting'>
+					</td>
+				</tr>
+
+				
+			</table>
+		</div>
+		<script>
+			document.getElementById('calendar').onclick = function() { document.location.href='../projects/calendar.html'}
+			document.getElementById('table-sort').onclick = function() { document.location.href='../projects/sort_table.html'}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<style type='text/css'>
+
+  body{
+
+      background: url(../pictures/background.png);
+      background-position: top;
+      color: #00FFFF;
+    }
+
+  tr{
+    text-align: center;
+  }
+
+  input[type='text']{
+    width: 100px;
+    text-align: center;
+  }
+
+  td{
+    width: 150px;
+  }
+</style>
+
+<body>
+   <table cellpadding='5' cellspacing='0' id='persons' border='1px'>
+      <tbody>
+         <tr>
+           <td>Name</td>
+           <td>Surname</td>
+           <td>Years old</td>
+        </tr>
+
+        <tr>
+           <td>Vasily</td>
+           <td>Medvedev</td>
+           <td>22</td>
+        </tr>
+
+        <tr>
+           <td>Maria</td>
+           <td>Krasnova</td>
+           <td>30</td>
+        </tr>
+
+        <tr>
+           <td>Boris</td>
+           <td>Ivanov</td>
+           <td>30</td>
+        </tr>
+
+        <tr>
+           <td>Ksenya</td>
+           <td>Koch</td>
+           <td>22</td>
+        </tr>
+
+        <tr>
+           <td>Alexander</td>
+           <td>Nabalny</td>
+           <td>45</td>
+        </tr>
+
+        <tr>
+            <td colspan='2' align='center'>
+              <input type='submit' value='Sort by years' id='sort-button'> 
+              <input type='submit' value='Back' id='button-back' hidden='true'>
+            </td>
+
+            <td>
+              <input type='text' id='text-area'>
+            </td>
+        </tr>
+        <tr>
+          <td colspan='3' align='center'>
+            <a href='../root/index.html'>Back to start page</a>
+          </td>
+        </tr>
+     </tbody>
+    </table>
+
+    <script>
+        const buttonSort = document.getElementById('sort-button');
+
+        buttonSort.onclick = function()
+        {
+
+            const textArea = document.getElementById('text-area');
+            const userSelect = textArea.value;
+
+            if(userSelect === '')
+                return;
+
+            const table = document.getElementById('persons');
+            const rows = table.querySelectorAll('tr');
+
+            // Create copy of the table 
+            const newFrag = document.createDocumentFragment();
+            const newTable = table.cloneNode(false);
+            const newTableTitle = rows[0].cloneNode(true);
+            const newUserInputArea = rows[rows.length-2].cloneNode(true);
+
+            // Set buttons parameters
+            newUserInputArea.children[1].remove();
+            newUserInputArea.children[0].setAttribute('colspan', '3');
+            newUserInputArea.querySelectorAll('input')[0].hidden = true;
+            newUserInputArea.querySelectorAll('input')[1].hidden = false;//removeAttribute('hidden');
+
+            newFrag.appendChild(newTable);
+            newTable.appendChild(newTableTitle);
+            newTable.appendChild(newUserInputArea);
+
+            // Compare age and create cells
+            for(let rowCnt = 1; rowCnt < rows.length-2; rowCnt++)
+            {
+                if(rows[rowCnt].children[2].textContent === userSelect)
+                {
+                    const sortRow = rows[rowCnt].cloneNode(true);
+
+                    newTable.children[0].after(sortRow);
+                }
+            }
+          
+            if(newTable.querySelectorAll('tr').length <= 2)
+            {
+                alert('Not found');
+
+                return;
+            }
+
+            document.body.removeChild(table);
+            document.body.appendChild(newFrag);
+
+            /* Set button 'Back' handler:
+               remove sorted table and return old table */
+            const buttonBack = document.getElementById('button-back');
+
+            buttonBack.onclick = function()
+            {
+                document.getElementById('persons').remove();
+
+                document.body.appendChild(table);
+            }
+        }
+    </script>
+ </body>
+</html>
