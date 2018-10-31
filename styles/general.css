@@ -1,0 +1,13 @@
+body{
+	color: #00FFFF;
+	background-color: #2e2e2e;
+}
+
+.img{
+
+	width: 1500px;
+	height: 1500px; 
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
